@@ -70,52 +70,52 @@ sleep 5
 
 echo 'renaming fastas...'
 sleep 2
-#mkdir work_dir
+mkdir work_dir
 
-#for file in *faa ; do
-#	name=${file%.faa}
-#	awk -v var="$name" '/^>/{print ">"var "_" ++i "_"; next}{print}' "$file" > work_dir/"$name"_mod.faa
-#done
+for file in *faa ; do
+	name=${file%.faa}
+	awk -v var="$name" '/^>/{print ">"var "_" ++i "_"; next}{print}' "$file" > work_dir/"$name"_mod.faa
+done
 
 echo 'generating header files...'
 sleep 2
 cd work_dir
 
-#for file in *faa ; do 
-#org=${file%_mod.faa}
-#grep $org $file > $org.headers
-#done
+for file in *faa ; do 
+	org=${file%_mod.faa}
+	grep $org $file > $org.headers
+done
 
 # 2 run orthofinder to infer single copy orthogroups
 
 echo 'running orthofinder...'
 sleep 2
-#orthofinder -f . -t $threads -og
+orthofinder -f . -t $threads -og
 
 cd OrthoFinder/Results_*/
 #cd Results*
 
-#grep -f SingleCopyOrthogroups.txt Orthogroups.csv > single_orthos.csv
+grep -f SingleCopyOrthogroups.txt Orthogroups.csv > single_orthos.csv
 
-#while IFS= read -r pattern ; do
-#	printf "$pattern" > OG.txt
-#	OG=$( awk '{print $1}' OG.txt )
-#	cat OG.txt | sed 's/\t/\n/g' | grep -v 'OG' > $OG.list
-#done < single_orthos.csv
+while IFS= read -r pattern ; do
+	printf "$pattern" > OG.txt
+	OG=$( awk '{print $1}' OG.txt )
+	cat OG.txt | sed 's/\t/\n/g' | grep -v 'OG' > $OG.list
+done < single_orthos.csv
 
 mkdir single_OGs
 cd single_OGs/
 cp ../Single_Copy_Orthologue_Sequences/*fa . 
 
-#cp ../OrthoFinder/Results_*/
-#mv ../OG*.list .
+cp ../OrthoFinder/Results_*/
+mv ../OG*.list .
 
-#cat ../../*faa > all.faa
+cat ../../*faa > all.faa
 
-#for file in *.list ; do
-#	name=${file%.list}
-#	faSomeRecords.py --fasta all.faa --list $file --outfile $name.faa
-#done
+for file in *.list ; do
+	name=${file%.list}
+	faSomeRecords.py --fasta all.faa --list $file --outfile $name.faa
+done
 
 # 3. align sequences with mafft and trim erroneous alignments using Gblocks
 
